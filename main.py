@@ -2,6 +2,7 @@
 
 import tkinter as tk
 import map
+import character
 
 class Application(tk.Frame):
     def __init__(self, master=None):
@@ -15,6 +16,11 @@ class Application(tk.Frame):
         self.init_canvas()
         self.nav_step = 32
         self.init_events()
+        self.init_character()
+
+
+    def init_character(self):
+        self.character = character.Character(self.canvas, [64,64])
 
     def init_events(self):
         self.TK.bind('<Right>', self.right)
@@ -51,19 +57,24 @@ class Application(tk.Frame):
         self._map.move(self.coords[0], self.coords[1]);
     
     def up(self, event):
-        self.coords = self._map.move(self.coords[0], self.coords[1] - self.nav_step)
+        self.coords = self.character.move('back')
+        self._map.move(self.coords[0], self.coords[1] - self.nav_step)
+
         print(self.coords)
 
     def down(self, event):
-        self.coords = self._map.move(self.coords[0], self.coords[1] + self.nav_step)
+        self.coords = self.character.move('front')
+        self._map.move(self.coords[0], self.coords[1] + self.nav_step)
         print(self.coords)
 
     def left(self, event):
-        self.coords = self._map.move(self.coords[0] - self.nav_step, self.coords[1])
+        self.coords =self.character.move('left')
+        self._map.move(self.coords[0] - self.nav_step, self.coords[1])
         print(self.coords)
 
     def right(self, event):
-        self.coords = self._map.move(self.coords[0] + self.nav_step, self.coords[1])
+        self.coords = self.character.move('right')
+        self._map.move(self.coords[0] + self.nav_step, self.coords[1])
         print(self.coords)
 
 
