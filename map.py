@@ -53,8 +53,8 @@ class Map:
 
         [x , y] = [-x, -y]
 
-        x = (sw/2 ) + x
-        y = (sh/2 ) + y
+        x = round((sw/2 ) + x)
+        y = round((sh/2 ) + y)
 
         return [x, y]
 
@@ -79,8 +79,8 @@ class Map:
         #my = (my//64) * 64
 
         [currentX, currentY] = self.coords()
-        deltaX = (mx - currentX)
-        deltaY = (my - currentY)
+        deltaX = (round(mx) - currentX)
+        deltaY = (round(my) - currentY)
 
         for obj in self.objects:
             self.canvas.move(obj, -1 * deltaX, -1 * deltaY)
