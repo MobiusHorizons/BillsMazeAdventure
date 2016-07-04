@@ -1,27 +1,11 @@
 import tkinter as tk
 import random
+import os
 
 import maze
 
 
 terrains = ['dirt', 'stone', 'start', 'finish']
-map1 = [
-        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    ]
 
 class Map:
     def __init__(self, canvas, width=5, height=5):
@@ -38,8 +22,11 @@ class Map:
 
     def load_tiles(self):
         self.tiles = {}
+        resources = os.environ.get('RESOURCEPATH')
+        if resources == None:
+            resources = 'tiles/'
         for t in terrains:
-            self.tiles[t] = tk.PhotoImage(file='./tiles/map-' + t + '.gif')
+            self.tiles[t] = tk.PhotoImage(file=os.path.join(resources, 'map-' + t + '.gif'))
 
     def load_map(self):
         self.height = len(self.config) * 64
@@ -103,12 +90,16 @@ class Map:
     def is_dirt(self, coords):
         # check if coords is solid
         [x,y] = coords
-        x = x // 64
-        y = y // 64
+        x = round(x / 64)
+        y = round(y / 64)
         return (
                  x >= 0 and x < len(self.config[0]) and
                  y >= 0 and y < len(self.config)    and 
                  self.config[y][x] != 1
                )
 
+    def clean(self):
+        #clean up map tiles
+        for obj in self.objects:
+            self.canvas.delete(obj)
 

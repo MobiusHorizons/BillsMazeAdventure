@@ -23,6 +23,11 @@ class Game():
     def move(self, direction):
         position = self.character.move(direction)
         if self._map.end == position:
-            self.won()
+            self.canvas.after(1,self.won)
+        return position
+
+    def clean(self):
+        self.character.clean()
+        self._map.clean()
 
        

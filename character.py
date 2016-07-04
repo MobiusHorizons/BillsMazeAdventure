@@ -1,4 +1,5 @@
 import tkinter as tk
+import os
 
 class Character:
     def __init__(self, canvas, terrain, coords=[0,0]):
@@ -12,20 +13,23 @@ class Character:
 
         self.facing = 'front'
         self.faces = {} 
-        
+
         screen_coords = self.screen_pos(coords)
 
         for face in ['right','back','left','front']:
             self.faces[face] = self.canvas.create_image(screen_coords[0], screen_coords[1], 
                     anchor=tk.NW, image=self.images[face], state=tk.HIDDEN);
-        self.set_pos()
+            self.set_pos()
         self.face(self.facing);
 
     def load_images(self):
-        self.images['front'] = tk.PhotoImage(file="./character/Bill-Front.gif");
-        self.images['right'] = tk.PhotoImage(file="./character/Bill-Right.gif");
-        self.images['back']  = tk.PhotoImage(file="./character/Bill-Back.gif");
-        self.images['left']  = tk.PhotoImage(file="./character/Bill-Left.gif");
+        resources = os.environ.get('RESOURCEPATH')
+        if resources == None:
+            resources = 'character'
+        self.images['front'] = tk.PhotoImage(file=os.path.join(resources, "Bill-Front.gif"))
+        self.images['right'] = tk.PhotoImage(file=os.path.join(resources, "Bill-Right.gif"))
+        self.images['back']  = tk.PhotoImage(file=os.path.join(resources, "Bill-Back.gif"))
+        self.images['left']  = tk.PhotoImage(file=os.path.join(resources, "Bill-Left.gif"))
 
     def face(self, direction):
         for face in ['right', 'back', 'left', 'front']:
@@ -40,14 +44,15 @@ class Character:
         [x, y] = self.coords
         
         if direction == 'front':
-            y += 64;
+            y += 32;
         elif direction == 'back':
-            y -=64
+            y -=32
         elif direction == 'right':
-            x += 64
+            x += 32
         elif direction == 'left':
-            x -= 64
+            x -= 32
         
+        coords = [x,y]
         return self.set_pos([x,y])
 
     def screen_pos(self, coords=None, screen_dims=None):
@@ -107,3 +112,8 @@ class Character:
         self._map.move(coords[0], coords[1])
 
         return coords
+
+    def clean(self):
+        # clean up any things that would stay arround
+        for face in self.faces:
+            self.canvas.delete(face)
